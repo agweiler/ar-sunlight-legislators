@@ -1,6 +1,9 @@
 require 'rake'
 require 'rspec/core/rake_task'
+require_relative 'app/models/legislator'
 require_relative 'db/config'
+require_relative 'queries'
+require_relative 'lib/sunlight_legislators_importer'
 
 
 desc "create the database"
@@ -25,6 +28,18 @@ end
 desc 'Retrieves the current schema version number'
 task "db:version" do
   puts "Current version: #{ActiveRecord::Migrator.current_version}"
+end
+
+#Testing queries in queries.rb
+desc 'Test whether we can access model'
+task 'model' do
+  Test.list_state_reps('NY')
+end
+
+# Populate db from legislators.csv
+desc 'Populate database'
+task "populate" do
+  SunlightLegislatorsImporter.import('db/data/legislators.csv')
 end
 
 desc "Run the specs"
